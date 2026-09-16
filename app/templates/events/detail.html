@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} - Event Manager{% endblock %}
+{% block content %}
+    <h1>{{ event.title }}</h1>
+    <p class="meta">{{ event.date | format_date }} &middot; {{ event.location }}</p>
+    <p>{{ event.description }}</p>
+
+    <p class="capacity-status">
+        <strong>{{ registration_count }} / {{ event.capacity }}</strong> registered
+        {% if spots_left > 0 %}
+            &mdash; {{ spots_left }} spot(s) left
+        {% else %}
+            &mdash; <span class="full">FULL</span>
+        {% endif %}
+    </p>
+
+    {% if spots_left > 0 %}
+        <section class="register-section">
+            <h2>Register</h2>
+            <form method="post" action="{{ url_for('events.register', event_id=event.id) }}" class="form">
+                <label for="attendee_name">Name</label>
+                <input type="text" id="attendee_name" name="attendee_name" required>
+
+                <label for="attendee_email">Email</label>
+                <input type="email" id="attendee_email" name="attendee_email" required>
+
+                <button type="submit">Register</button>
+            </form>
+        </section>
+    {% else %}
+        <p class="empty">Registration is closed &mdash; this event is at capacity.</p>
+    {% endif %}
+
+    <section class="registrations-section">
+        <h2>Registered Attendees</h2>
+        {% if registrations %}
+            <ul class="registration-list">
+                {% for reg in registrations %}
+                    <li>
+                        {{ reg.attendee_name }} &lt;{{ reg.attendee_email }}&gt;
+                        <form method="post" action="{{ url_for('events.cancel_registration', registration_id=reg.id) }}" class="inline-form">
+                            <button type="submit" class="link-button">Cancel</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty">No registrations yet.</p>
+        {% endif %}
+    </section>
+{% endblock %}

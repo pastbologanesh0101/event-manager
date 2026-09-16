@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Upcoming' if filter == 'upcoming' else 'Past' }} Events - Event Manager{% endblock %}
+{% block content %}
+    <h1>{{ 'Upcoming Events' if filter == 'upcoming' else 'Past Events' }}</h1>
+
+    <div class="filter-tabs">
+        <a class="{{ 'active' if filter == 'upcoming' else '' }}" href="{{ url_for('events.list_events', filter='upcoming') }}">Upcoming</a>
+        <a class="{{ 'active' if filter == 'past' else '' }}" href="{{ url_for('events.list_events', filter='past') }}">Past</a>
+    </div>
+
+    {% if events %}
+        <ul class="event-list">
+            {% for event in events %}
+                <li class="event-card">
+                    <a href="{{ url_for('events.event_detail', event_id=event.id) }}">
+                        <h2>{{ event.title }}</h2>
+                    </a>
+                    <p class="meta">{{ event.date | format_date }} &middot; {{ event.location }}</p>
+                    <p>{{ event.registration_count }} / {{ event.capacity }} registered</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty">No {{ filter }} events found.</p>
+    {% endif %}
+{% endblock %}
