@@ -103,3 +103,28 @@ def test_cancel_registration_frees_a_slot(app, client):
         follow_redirects=True,
     )
     assert b"Registration successful" in second.data
+
+
+def test_new_event_missing_title_rejected(client):
+    response = client.post(
+        "/events/new",
+        data={
+            "title": "",
+            "description": "",
+            "date": "2099-01-01",
+            "location": "",
+            "capacity": "5",
+        },
+    )
+    assert response.status_code == 400
+    assert b"Title is required" in response.data
+
+
+def test_register_for_nonexistent_event_redirects_with_error(client):
+    response = client.post(
+        "/events/999999/register",
+        data={"attendee_name": "Alice", "attendee_email": "alice@example.com"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Event not found" in response.data
