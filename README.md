@@ -74,6 +74,36 @@ throwaway SQLite database file per test so they never touch your real data.
 5. Cancel a registration from the detail page to free up a slot, then
    register a new attendee into that freed slot.
 
+## Troubleshooting / FAQ
+
+**I ran `python app.py` twice and my old events disappeared.**
+`init_db()` only creates tables with `CREATE TABLE IF NOT EXISTS`, so it
+never drops data. If events look missing, check that you're running from
+the same working directory each time — `instance/event_manager.db` is a
+relative path, so running the app from a different folder creates (or
+reads) a different database file.
+
+**Registering with a valid-looking email still gets rejected.**
+The app does a lightweight format check (must contain `@` and a `.` in the
+domain part) rather than a full RFC 5322 validation. Addresses like
+`user@localhost` (no dot) will be rejected even though some mail servers
+accept them. This is intentional for a small internal tool — swap in a
+proper validator (e.g. `email-validator`) if you need stricter or looser
+rules.
+
+**Why do dates have to be `YYYY-MM-DD`?**
+Event dates are stored as plain `TEXT` in SQLite and compared with string
+comparison (`WHERE date >= ?`) to split upcoming vs. past events. That only
+sorts correctly if every date uses the same zero-padded `YYYY-MM-DD` format,
+so the form rejects anything else rather than risk silently mis-sorting
+events.
+
+**The capacity count on the detail page seems off after cancelling.**
+Registration counts are computed live with `COUNT(*)` on every page load
+(there's no cached counter column), so the number always reflects the
+current `registration` table. If it looks stale, it's almost always a
+browser cache — hard refresh the page.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
