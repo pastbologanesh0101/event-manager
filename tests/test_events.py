@@ -120,6 +120,18 @@ def test_new_event_missing_title_rejected(client):
     assert b"Title is required" in response.data
 
 
+def test_register_with_invalid_email_rejected(client):
+    event_id = create_event(client, capacity=5)
+
+    response = client.post(
+        f"/events/{event_id}/register",
+        data={"attendee_name": "Alice", "attendee_email": "not-an-email"},
+        follow_redirects=True,
+    )
+    assert b"valid email address" in response.data
+    assert b"0 / 5" in response.data
+
+
 def test_register_for_nonexistent_event_redirects_with_error(client):
     response = client.post(
         "/events/999999/register",

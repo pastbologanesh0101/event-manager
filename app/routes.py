@@ -130,6 +130,10 @@ def register(event_id):
         flash("Name and email are required to register.", "error")
         return redirect(url_for("events.event_detail", event_id=event_id))
 
+    if "@" not in email or "." not in email.rsplit("@", 1)[-1]:
+        flash("Please enter a valid email address (e.g. name@example.com).", "error")
+        return redirect(url_for("events.event_detail", event_id=event_id))
+
     current_count = db.execute(
         "SELECT COUNT(*) AS c FROM registration WHERE event_id = ?", (event_id,)
     ).fetchone()["c"]
