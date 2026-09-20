@@ -1,8 +1,22 @@
 # Event Manager
 
+[![Tests](https://github.com/pastbologanesh0101/event-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/pastbologanesh0101/event-manager/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A small Flask + SQLite event management system. Create events, let attendees
 register with capacity limits, and manage registrations — all server-rendered
 with Jinja2 templates and plain CSS, no JavaScript framework required.
+
+## Table of contents
+
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Running locally](#running-locally)
+- [Running the tests](#running-the-tests)
+- [Example usage](#example-usage)
+- [Troubleshooting / FAQ](#troubleshooting--faq)
+- [License](#license)
 
 ## Features
 
